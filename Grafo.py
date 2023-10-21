@@ -62,6 +62,12 @@ def depth_first_search(self, vert, visited, t):
     else:
         print("Nada encontrado")
 
+def check_regular(matrix: Matrix, list: List):
+    if matrix.is_regular():
+        print("O grafo é regular.")
+    else:
+        print("O grafo não é regular.")
+
 
 if __name__ == "__main__":
     digraph = bool(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): "))
@@ -82,6 +88,7 @@ if __name__ == "__main__":
             print("8. Verificar se o grafo é fortemente conectado (direcionado)")
         print("9. Busca em profundidade")
         print("10. Busca em largura")
+        print("11. Verificar se o grafo é regular")
 
         choice = int(input("Escolha uma opção: "))
 
@@ -111,5 +118,12 @@ if __name__ == "__main__":
             t = 0
             print("Realizando busca em profundidade a partir do vértice:", vert)
             t = matrix.depth_first_search(matrix.n, vert, visited, t)
-        else:
+        elif choice == 10:
             break
+        elif choice == 11:
+            check_regular(matrix, list)
+        elif choice == 12:
+            if matrix.is_complete():
+                print("O grafo é completo.")
+            else:
+                print("O grafo não é completo.")

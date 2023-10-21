@@ -132,3 +132,24 @@ class Matrix:
             graph_str += " ".join(map(str, row)) + "\n"
         # Retorna a string resultante que representa a matriz de adjacência do grafo.
         return graph_str
+
+    def is_regular(self):
+        vertices = {}
+        for i in range(self.n):
+            vertices[i] = 0
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.graph[i][j] != "-" and i != j:
+                    vertices[i] += 1
+        flag = vertices[0]
+        for i in range(self.n):
+            if vertices[i] != flag:
+                return False
+        return True
+    
+    def is_complete(self):
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.graph[i][j] == "-" and i != j:
+                    return False
+        return True
