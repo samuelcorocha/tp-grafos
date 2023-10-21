@@ -55,6 +55,14 @@ def find_neighbors(matrix: Matrix, vert):
         print("Não há vizinhos")
 
 
+def depth_first_search(self, vert, visited, t):
+    search = matrix.depth_first_search
+    if len(search):
+        print("Resultado da busca: ${search}")
+    else:
+        print("Nada encontrado")
+
+
 if __name__ == "__main__":
     digraph = bool(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): "))
     n = int(input("Informe o número de vértices: "))
@@ -72,6 +80,8 @@ if __name__ == "__main__":
         print("7. Verificar se o grafo é conexo (não direcionado)")
         if digraph:
             print("8. Verificar se o grafo é fortemente conectado (direcionado)")
+        print("9. Busca em profundidade")
+        print("10. Busca em largura")
 
         choice = int(input("Escolha uma opção: "))
 
@@ -92,5 +102,14 @@ if __name__ == "__main__":
             is_connected(matrix)
         elif choice == 8 and digraph:
             is_strongly_connected(matrix)
+        elif choice == 9:
+            vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
+            visited = [False] * matrix.n
+            TD = [0] * matrix.n
+            TT = [0] * matrix.n
+            parent = [-1] * matrix.n
+            t = 0
+            print("Realizando busca em profundidade a partir do vértice:", vert)
+            t = matrix.depth_first_search(matrix.n, vert, visited, t)
         else:
             break
