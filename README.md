@@ -20,3 +20,4 @@ Uma biblioteca de grafos feita em Python.
 10. Fazer busca em largura.
 11. Verificar a existência de caminho entre dois vértices.
     1. Caso exista, exibir o caminho.
+12. Permitir a visualização do grafo na ferramenta Gephi. Os formatos suportados são: GEXF, GDF, GML, GraphML, Pajek NET, GraphViz DOT, CSV, UCINET DL, Tulip TPL, Netdraw VNA, Spreadsheet. A documentação de cada formato pode ser encontrada em: https://gephi.org/users/supported-graph-formats
