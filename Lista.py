@@ -31,9 +31,94 @@ class List:
         return {"Entrie": entrie_degree, "Output": output_degree}
 
     def get_graph_degree(self, directed=False):
+        if not directed:
+            degree = 0
+            for i in self.graph.values():
+                degree += len(i)
+            return degree
+        
+        else:
+            entrie_degree = 0
+            output_degree = 0
 
-# 
-# graph = {
-# 	"1" = ["3" : 2]
-# 	"2" = ["1" : 2]
-# }            
+            for i in self.graph.values():
+                output_degree += len(i)
+            
+            for i in self.graph.values():
+                if i in i:
+                    entrie_degree += 1
+            
+            return {"Entrie": entrie_degree, "Output": output_degree}
+        
+    def get_vertex_neighborhood(self, v, directed = False):
+        neighbors = []
+        for i in self.graph[v]:
+            neighbors.append(i)
+
+        if not directed:
+            return neighbors
+        else:
+            for i in self.graph.values():
+                if not (i == v):
+                    if v in self.graph[i]:
+                        neighbors.append(i)
+    
+    def is_conected(self):
+        visited = set()
+        def dfs(vertex):
+            visited.add(vertex)
+            for neighbor in self.graph[vertex]:
+                if neighbor not in visited and self.graph[neighbor][0] == vertex:
+                    dfs(neighbor)
+        dfs("1")
+        return len(visited) == len(self.graph)
+
+    def is_regular (self, directed = False):
+        if not directed: 
+            degree = self.get_vertex_degree("1")
+            for i in self.graph.values():
+                if degree != self.get_vertex_degree(i):
+                    return False
+            return True
+        else:
+            entry = False
+            out = False
+            
+            output_degree  = self.get_vertex_degree("1")
+            for i in self.graph.values():
+                if degree != self.get_vertex_degree(i):
+                    out = False
+            out = True
+            
+            quantity = 0
+            comparator = 0
+            for i in self.graph.values():
+                for j in self.graph.values(i):
+                    if i in j:
+                        quantity += 1
+                if i == 1:
+                    comparator = quantity
+                else:
+                    if quantity != comparator:
+                        entry = False
+                    entry = True
+            return (entry and out)
+
+    
+    def is_complete(self, directed = False):
+        if not directed:
+            degree = len(self.graph) - 1
+            for i in self.graph.values():
+                if degree != self.get_vertex_degree(i):
+                    return False
+        else:
+            degree = len(self.graph) - 1
+            for i in self.graph.values():
+                if degree != self.get_vertex_degree(i):
+                    return False
+                if i in self.graph.values():
+                    counter += counter
+                if counter != degree:
+                    return False
+        return True
+                    
