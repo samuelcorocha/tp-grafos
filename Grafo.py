@@ -24,13 +24,18 @@ def printGraph(matrix: Matrix, list: List):
 
 def getVertexDegree(matrix: Matrix, list: List):
     vert = int(input("Vértice que deseja consultar: "))
-    degree = matrix.get_rate(vert)
-    print("O grau do vertice ${vert} é ${degree}")
+    if matrix.digraph:
+        degree = matrix.get_rate(vert)
+        print(
+            f"O grau de entrada do vértice {vert} é {degree['entry']}, e saída é {degree['exit']}")
+    else:
+        degree = matrix.get_rate(vert)
+        print(f"O grau do vertice {vert} é {degree['entry']}")
 
 
 def getGraphDegree(matrix: Matrix):
     graphDegree = matrix.get_graphDegree()
-    print("Grau do grafo (matriz): ${graphDegree}")
+    print(f"Grau do grafo (matriz): {graphDegree}")
 
 
 def is_connected(matrix: Matrix):
@@ -50,7 +55,7 @@ def is_strongly_connected(matrix: Matrix):
 def find_neighbors(matrix: Matrix, vert):
     neighbors = matrix.find_neighbors(vert)
     if len(neighbors):
-        print("Os vizinhos são: ${neighbors}")
+        print(f"Os vizinhos são: {neighbors}")
     else:
         print("Não há vizinhos")
 
@@ -58,9 +63,10 @@ def find_neighbors(matrix: Matrix, vert):
 def depth_first_search(self, vert, visited, t):
     search = matrix.depth_first_search
     if len(search):
-        print("Resultado da busca: ${search}")
+        print(f"Resultado da busca: {search}")
     else:
         print("Nada encontrado")
+
 
 def check_regular(matrix: Matrix, list: List):
     if matrix.is_regular():
@@ -84,11 +90,15 @@ if __name__ == "__main__":
         print("5. Consultar grau do grafo (matriz)")
         print("6. Consultar vizinhos de um vértice")
         print("7. Verificar se o grafo é conexo (não direcionado)")
+        if not directed:
+            print("7. Verificar se o grafo é conexo (não direcionado)")
         if directed:
             print("8. Verificar se o grafo é fortemente conectado (direcionado)")
         print("9. Busca em profundidade")
         print("10. Busca em largura")
         print("11. Verificar se o grafo é regular")
+        print("12. Verificar se o grafo é completo")
+        print("13. Verificar se há caminho")
 
         choice = int(input("Escolha uma opção: "))
 
@@ -110,7 +120,8 @@ if __name__ == "__main__":
         elif choice == 8 and directed:
             is_strongly_connected(matrix)
         elif choice == 9:
-            vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
+            vert = int(
+                input("Informe o vértice de partida para a busca em profundidade: "))
             visited = [False] * matrix.n
             TD = [0] * matrix.n
             TT = [0] * matrix.n
@@ -119,7 +130,10 @@ if __name__ == "__main__":
             print("Realizando busca em profundidade a partir do vértice:", vert)
             t = matrix.depth_first_search(matrix.n, vert, visited, t)
         elif choice == 10:
-            break
+            vert = int(
+                input("Informe o vértice de partida para a busca em largura: "))
+            print(f"Vertices visitados: {matrix.bfs(vert)}")
+
         elif choice == 11:
             check_regular(matrix, list)
         elif choice == 12:
@@ -127,3 +141,9 @@ if __name__ == "__main__":
                 print("O grafo é completo.")
             else:
                 print("O grafo não é completo.")
+
+        elif choice == 13:
+            source = int(input("Vértice de origem: "))
+            destination = int(input("Vértice de destino: "))
+            if not matrix.get_Path(source, destination):
+                print("Não há caminho")
