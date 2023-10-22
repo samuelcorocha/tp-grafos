@@ -76,11 +76,10 @@ def check_regular(matrix: Matrix, list: List):
 
 
 if __name__ == "__main__":
-    digraph = bool(
-        input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): "))
+    directed = bool(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): "))
     n = int(input("Informe o número de vértices: "))
-    list = List(n)
-    matrix = Matrix(n, digraph)
+    list = List(n, directed)
+    matrix = Matrix(n, directed)
 
     while True:
         print("\nOpções:")
@@ -90,9 +89,10 @@ if __name__ == "__main__":
         print("4. Consultar grau do vértice")
         print("5. Consultar grau do grafo (matriz)")
         print("6. Consultar vizinhos de um vértice")
-        if not digraph:
+        print("7. Verificar se o grafo é conexo (não direcionado)")
+        if not directed:
             print("7. Verificar se o grafo é conexo (não direcionado)")
-        if digraph:
+        if directed:
             print("8. Verificar se o grafo é fortemente conectado (direcionado)")
         print("9. Busca em profundidade")
         print("10. Busca em largura")
@@ -117,7 +117,7 @@ if __name__ == "__main__":
             find_neighbors(matrix, vert)
         elif choice == 7:
             is_connected(matrix)
-        elif choice == 8 and digraph:
+        elif choice == 8 and directed:
             is_strongly_connected(matrix)
         elif choice == 9:
             vert = int(
