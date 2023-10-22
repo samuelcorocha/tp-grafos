@@ -16,7 +16,7 @@ class List:
         if not directed:
             self.graph[v2].remove(v1)
     
-    def get_vertex_degree(self, v, directed=False):
+    def get_vertice_degree(self, v, directed=False):
         if not directed:
             return len(self.graph[v])
         else:
@@ -50,7 +50,7 @@ class List:
             
             return {"Entrie": entrie_degree, "Output": output_degree}
         
-    def get_vertex_neighborhood(self, v, directed = False):
+    def get_vertice_neighborhood(self, v, directed = False):
         neighbors = []
         for i in self.graph[v]:
             neighbors.append(i)
@@ -64,29 +64,23 @@ class List:
                         neighbors.append(i)
     
     def is_conected(self):
-        visited = set()
-        def dfs(vertex):
-            visited.add(vertex)
-            for neighbor in self.graph[vertex]:
-                if neighbor not in visited and self.graph[neighbor][0] == vertex:
-                    dfs(neighbor)
-        dfs("1")
+        visited = self.dfs("1")
         return len(visited) == len(self.graph)
 
     def is_regular (self, directed = False):
         if not directed: 
-            degree = self.get_vertex_degree("1")
+            degree = self.get_vertice_degree("1")
             for i in self.graph.values():
-                if degree != self.get_vertex_degree(i):
+                if degree != self.get_vertice_degree(i):
                     return False
             return True
         else:
             entry = False
             out = False
             
-            output_degree  = self.get_vertex_degree("1")
+            output_degree = self.get_vertice_degree("1")
             for i in self.graph.values():
-                if degree != self.get_vertex_degree(i):
+                if output_degree != self.get_vertice_degree(i):
                     out = False
             out = True
             
@@ -109,16 +103,55 @@ class List:
         if not directed:
             degree = len(self.graph) - 1
             for i in self.graph.values():
-                if degree != self.get_vertex_degree(i):
+                if degree != self.get_vertice_degree(i):
                     return False
         else:
             degree = len(self.graph) - 1
             for i in self.graph.values():
-                if degree != self.get_vertex_degree(i):
+                if degree != self.get_vertice_degree(i):
                     return False
                 if i in self.graph.values():
                     counter += counter
                 if counter != degree:
                     return False
         return True
-                    
+    
+    def dfs(self, vertice):
+        visited = set()
+        visited.add(vertice)
+        for neighbor in self.graph[vertice]:
+            if neighbor not in visited and self.graph[neighbor][0] == vertice:
+                self.dfs(neighbor)
+        return visited
+    
+    def bfs(self, vertice):
+        visited = set()
+        queue = [vertice]
+
+        while queue:
+            vert = queue.pop(0)
+            visited.add(vert)
+            
+            for i in self.graph[vert]:
+                if i not in visited:
+                    queue.append(i)
+        return visited
+    
+    def get_path(self, v1, v2):
+        visited = set()
+        path = []
+
+        def dfs_aux(vertice):
+            visited.add(vertice)
+            path.append(vertice)
+            if vertice == v2:
+                return True
+            for i in self.graph[vertice]:
+                if i not in visited:
+                    if dfs_aux(i):
+                        return True
+            return False
+
+        dfs_aux(v1)
+        path.reverse()
+        print(path)
