@@ -1,3 +1,6 @@
+from collections import deque
+
+
 class Matrix:
     def __init__(self, n: int, digraph: bool):
         self.n: int = n
@@ -6,11 +9,13 @@ class Matrix:
 
     def get_rate(self, vert):
         if vert >= 0 and vert < self.n:
-            soma = 0
+            degree = {"entry": 0, "exit": 0}
             for r in range(self.n):  # Corrigindo o loop range
                 if self.graph[vert][r] != "-":
-                    soma += 1
-            return soma
+                    degree["entry"] += 1
+                if self.graph[r][vert] != "-":
+                    degree["exit"] += 1
+            return degree
 
     def get_graphDegree(self):
         soma = 0
@@ -40,7 +45,6 @@ class Matrix:
             # Se o grafo não for direcionado, é necessário remover a aresta no sentido oposto.
             self.graph[destination][source] = "-"
 
-
     def find_neighbors(self, vert):
         # Obtém a lista de vizinhos de um vértice específico no grafo.
         neighbors = []
@@ -61,7 +65,7 @@ class Matrix:
             neighbors = []
             # Inicializa uma lista vazia para armazenar os vizinhos do vértice.
             for r in range(self.n):
-            # Itera através de todos os vértices do grafo (de 0 a self.n - 1).
+                # Itera através de todos os vértices do grafo (de 0 a self.n - 1).
                 if self.graph[vert][r] != '-':
                     # Verifica se existe uma aresta (ou conexão) entre o vértice 'vert' e o vértice 'r'.
                     # Se houver uma aresta, adicione 'r' à lista de vizinhos.
@@ -93,7 +97,8 @@ class Matrix:
             if not all(visited):
                 # Se, após a busca, algum vértice não foi visitado, o grafo não é fortemente conectado.
                 # Inverte o grafo (troca as direções das arestas)
-                reversed_test = [[self.graph[j][i] for j in range(self.n)] for i in range(self.n)]
+                reversed_test = [[self.graph[j][i]
+                                  for j in range(self.n)] for i in range(self.n)]
                 reversed_graph = Matrix(self.n, self.digraph)
                 reversed_graph.graph = reversed_test
                 for vert in range(self.n):
@@ -146,10 +151,63 @@ class Matrix:
             if vertices[i] != flag:
                 return False
         return True
-    
+
     def is_complete(self):
         for i in range(self.n):
             for j in range(self.n):
                 if self.graph[i][j] == "-" and i != j:
                     return False
         return True
+
+    def bfs(self, origin):
+        if origin < 0 or origin >= self.n:
+            raise ValueError(
+                "O vértice inicial está fora do intervalo válido.")
+
+        visited = [False] * self.n
+        queue = deque()
+
+        visited[origin] = True
+        queue.append(origin)
+
+        while queue:
+            current_vertex = queue.popleft()
+            print(f"Visitando vértice {current_vertex}")
+
+            for neighbor in range(self.n):
+                if self.graph[current_vertex][neighbor] != "-" and not visited[neighbor]:
+                    visited[neighbor] = True
+                    queue.append(neighbor)
+
+    def buscaCaminho(self, vertice_inicial):
+        visitados = []
+        stack = [vertice_inicial]
+
+        while stack:
+            v = stack.pop()
+            visitados.append(v)
+
+            for u in range(len(self.graph)):
+                if self.graph[v][u] != "-" and u not in visitados:
+                    stack.append(u)
+
+        return visitados
+
+    def get_Path(self, origin, destination):
+
+        visiteds = set()
+        pilha = [origin]
+
+        while pilha:
+            v = pilha.pop()
+            visiteds.add(v)
+
+            if v == destination:
+                print(self.buscaCaminho(origin))
+                return True
+
+            for u in range(len(self.graph)):
+                if self.graph[v][u] != "-" and u not in visiteds:
+                    pilha.append(u)
+
+        return False
