@@ -35,7 +35,7 @@ class List:
                     if edge[0] == v:
                         entry_degree += 1
 
-        return {"Entrie": entry_degree, "Output": output_degree}
+        return {"Entry": entry_degree, "Output": output_degree}
 
     def get_graph_degree(self, directed=False):
         if not directed:
@@ -72,11 +72,21 @@ class List:
     def is_connected(self):
         if self.graph:  # Verifica se o grafo não está vazio
             start_vertex = next(iter(self.graph))  # Escolhe o primeiro vértice do grafo como ponto de partida
-            visited = self.dfs(start_vertex)
-            return len(visited) == len(self.graph)
+            visited = self.dfs_connected(start_vertex)
+            return (len(visited) == len(self.graph))
         else:
             return False
+        
+    def dfs_connected(self, start):
+        visited = []
 
+        def dfs_helper(node):
+            visited.append(node)
+            for neighbor, _ in self.graph.get(node, []):
+                if neighbor not in visited:
+                    dfs_helper(neighbor)                
+        dfs_helper(start)
+        return visited
 
     def is_regular(self, directed=False):
         if not directed:
@@ -115,11 +125,26 @@ class List:
                 if neighbor not in visited:
                     dfs_helper(neighbor)
 
-        dfs_helper(start)
-        return visited
+        dfs_helper(start)  # Inicie a busca DFS com o valor de start do parâmetro.
+        print("")
+
+        while len(visited) < len(self.graph):
+            # Encontre um vértice não visitado como um novo ponto de partida.
+            start_vertex = None
+            for vertex in self.graph:
+                if vertex not in visited:
+                    start_vertex = vertex
+                    break
+
+            if start_vertex is not None:
+                dfs_helper(start_vertex)
+                print("")
+
+        return list(visited)
     
     def bfs(self, vertice):
         visited = []
+        all_visited = []
         queue = deque([vertice])
 
         while queue:
@@ -127,8 +152,25 @@ class List:
             if vertex not in visited:
                 print(vertex, end="->")
                 visited.append(vertex)
-                queue.extend(neighbor for neighbor, _ in self.graph.get(vertex, []) if neighbor not in visited)
-        return visited
+                all_visited.append(vertex)
+                queue.extend(neighbor for neighbor, _ in self.graph.get(vertex, []) if neighbor not in all_visited)
+
+        # Verifique se todos os vértices foram visitados; se não, encontre um novo ponto de partida.
+        while all_visited != set(self.graph.keys()):
+            print("")
+            start_vertex = next(vertex for vertex in self.graph if vertex not in all_visited)
+            queue = deque([start_vertex])
+            visited = []
+            while queue:
+                vertex = queue.popleft()
+                if vertex not in visited:
+                    print(vertex, end="->")
+                    visited.append(vertex)
+                    all_visited.append(vertex)
+                    queue.extend(neighbor for neighbor, _ in self.graph.get(vertex, []) if neighbor not in all_visited)
+        print("")
+
+        return list(all_visited)
     
     def get_path(self, v1, v2):
         visited = set()
@@ -146,7 +188,6 @@ class List:
             return False
         
         dfs_aux(v1)
-        path.reverse()
         return path
     
     def get_gephi_model():
