@@ -111,7 +111,7 @@ class Matrix:
                         return False
         return True
 
-    def depth_first_search(self, vert, visited, t):
+    def dfs(self, vert, visited, t):
         # Marca o vértice como visitado
         visited[vert] = True
         # Incrementa o contador de tempo em 1
