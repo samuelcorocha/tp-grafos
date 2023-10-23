@@ -50,7 +50,9 @@ def getGraphDegree(matrix: Matrix):
     graphDegree = matrix.get_graphDegree()
     print(f"Grau do grafo (matriz): {graphDegree}")
 
-def find_neighbors(matrix: Matrix, vert):
+def find_neighbors(matrix: Matrix):
+    vert = int(input("Qual o vértice que deseja: "))
+
     print("-----LISTA------")
 
     print("-----MATRIZ-----")
@@ -90,9 +92,17 @@ def is_complete():
     print("-----MATRIZ-----")
 
 def depth_first_search(self, vert, visited, t):
+    vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
     print("-----LISTA------")
 
     print("-----MATRIZ-----")
+    visited = [False] * matrix.n
+    TD = [0] * matrix.n
+    TT = [0] * matrix.n
+    parent = [-1] * matrix.n
+    t = 0
+    print("Realizando busca em profundidade a partir do vértice:", vert)
+    t = matrix.depth_first_search(matrix.n, vert, visited, t)
     search = matrix.dfs
     if len(search):
         print(f"Resultado da busca: {search}")
@@ -100,9 +110,11 @@ def depth_first_search(self, vert, visited, t):
         print("Nada encontrado")
 
 def breadth_first_search():
+    vert = int(input("Informe o vértice de partida para a busca em largura: "))
     print("-----LISTA------")
 
     print("-----MATRIZ-----")
+    print(f"Vertices visitados: {matrix.bfs(vert)}")
     search = matrix.bfs
     if len(search):
         print(f"Resultado da busca: {search}")
@@ -110,14 +122,18 @@ def breadth_first_search():
         print("Nada encontrado")
 
 def get_path():
+    source = int(input("Vértice de origem: "))
+    destination = int(input("Vértice de destino: "))
     print("-----LISTA------")
 
     print("-----MATRIZ-----")
+    if not matrix.get_Path(source, destination):
+        print("Não há caminho")
 
 if __name__ == "__main__":
     directed = bool(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): "))
     n = int(input("Informe o número de vértices: "))
-    list = List(n, directed)
+    list = List(n)
     matrix = Matrix(n, directed)
 
     while True:
@@ -138,49 +154,37 @@ if __name__ == "__main__":
         choice = int(input("Escolha uma opção: "))
 
         if choice == 1:
-            insertEdge(matrix)
+            insertEdge(matrix, list, directed)
 
         elif choice == 2:
-            removeEdge(matrix)
+            removeEdge(matrix, list, directed)
 
         elif choice == 3:
             printGraph(matrix, list)
 
         elif choice == 4:
-            getVertexDegree(matrix, list)
+            getVertexDegree(matrix, list, directed)
 
         elif choice == 5:
-            getGraphDegree(matrix)
+            getGraphDegree(matrix, list, directed)
 
         elif choice == 6:
-            vert = int(input("Qual o vértice que deseja: "))
-            find_neighbors(matrix, vert)
+            find_neighbors(matrix, list, directed)
 
         elif choice == 7:
-            is_connected(matrix)
+            is_connected(matrix, list)
 
         elif choice == 8:
-            is_regular(matrix, list)
+            is_regular(matrix, list, directed)
 
-        elif choice == 9 and directed:
-            is_connected(matrix)
+        elif choice == 9:
+            is_complete(matrix, list, directed)
 
         elif choice == 10:
-            vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
-            visited = [False] * matrix.n
-            TD = [0] * matrix.n
-            TT = [0] * matrix.n
-            parent = [-1] * matrix.n
-            t = 0
-            print("Realizando busca em profundidade a partir do vértice:", vert)
-            t = matrix.depth_first_search(matrix.n, vert, visited, t)
+            depth_first_search(matrix, list)
 
         elif choice == 11:
-            vert = int(input("Informe o vértice de partida para a busca em largura: "))
-            print(f"Vertices visitados: {matrix.bfs(vert)}")
+            breadth_first_search(matrix, list)
 
         elif choice == 2:
-            source = int(input("Vértice de origem: "))
-            destination = int(input("Vértice de destino: "))
-            if not matrix.get_Path(source, destination):
-                print("Não há caminho")
+            get_path(matrix, list, directed)

@@ -148,3 +148,6 @@ class List:
         dfs_aux(v1)
         path.reverse()
         return path
+    
+    def get_gephi_model():
+        pass
