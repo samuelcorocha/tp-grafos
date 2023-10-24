@@ -4,7 +4,7 @@ class Matrix:
         self.digraph = digraph
         self.graph = [["-"] * n for _ in range(n)]
 
-    def add_edge(self, source, destination, weight= None):
+    def add_edge(self, source, destination, weight=None):
         if source >= 0 and source < self.vertices and destination >= 0 and destination < self.vertices:
             self.graph[source][destination] = weight
             if not self.digraph:
@@ -15,6 +15,7 @@ class Matrix:
             self.graph[source][destination] = "-"
             if not self.digraph:
                 self.graph[destination][source] = "-"
+
 
 def export_undirected_graph(matriz: Matrix, file_name):
     with open(file_name, "w") as f:
@@ -34,7 +35,7 @@ def export_undirected_graph(matriz: Matrix, file_name):
                     if matriz.graph[i][j] is None:
                         f.write(f'      <edge source="{i}" target="{j}"/>\n')
                     # Caso não seja ponderada verifica se é uma conexão bilateral
-                    else:     
+                    else:
                         f.write(f'      <edge source="{i}" target="{j}" weight="{matriz.graph[i][j]}"/>\n')
         f.write('    </edges>\n')
 
@@ -61,7 +62,7 @@ def export_directed_graph(matriz: Matrix, file_name):
                         f.write(f'      <edge source="{i}" target="{j}" type="directed"/>\n')
                     else:
                         f.write(f'      <edge source="{i}" target="{j}" type="directed" weight="{matriz.graph[i][j]}"/>\n')
-                   
+
         f.write('    </edges>\n')
 
         f.write('  </graph>\n')
@@ -73,8 +74,10 @@ if __name__ == "__main__":
     matriz = Matrix(3, True)
     matriz.add_edge(0, 1)
     matriz.add_edge(2, 1, 10)
-    print(matriz.graph)
-    if(matriz.digraph):
+    print("Matriz:")
+    for i in range(matriz.vertices):
+        print(matriz.graph[i])
+    if (matriz.digraph):
         export_directed_graph(matriz, "directed_graph.gexf")
-    else: 
+    else:
         export_undirected_graph(matriz, "undirected_graph.gexf")
