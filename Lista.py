@@ -143,30 +143,31 @@ class List:
         return list(visited)
     
     def bfs(self, vertice):
-        visited = []
-        all_visited = []
+        visited = set()
+        all_visited = set()
         queue = deque([vertice])
 
         while queue:
             vertex = queue.popleft()
             if vertex not in visited:
                 print(vertex, end="->")
-                visited.append(vertex)
-                all_visited.append(vertex)
+                visited.add(vertex)
+                all_visited.add(vertex)
                 queue.extend(neighbor for neighbor, _ in self.graph.get(vertex, []) if neighbor not in all_visited)
 
-        # Verifique se todos os vértices foram visitados; se não, encontre um novo ponto de partida.
+        # Verifica se todos os vértices foram visitados; se não, encontre um novo ponto de partida.
         while all_visited != set(self.graph.keys()):
             print("")
-            start_vertex = next(vertex for vertex in self.graph if vertex not in all_visited)
+            unvisited_vertices = set(self.graph.keys()) - all_visited
+            start_vertex = unvisited_vertices.pop()
             queue = deque([start_vertex])
-            visited = []
+            visited = set()
             while queue:
                 vertex = queue.popleft()
                 if vertex not in visited:
                     print(vertex, end="->")
-                    visited.append(vertex)
-                    all_visited.append(vertex)
+                    visited.add(vertex)
+                    all_visited.add(vertex)
                     queue.extend(neighbor for neighbor, _ in self.graph.get(vertex, []) if neighbor not in all_visited)
         print("")
 
@@ -189,6 +190,3 @@ class List:
         
         dfs_aux(v1)
         return path
-    
-    def get_gephi_model():
-        pass

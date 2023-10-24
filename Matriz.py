@@ -7,7 +7,7 @@ class Matrix:
         self.graph = [["-"] * n for _ in range(n)]
         self.digraph: bool = digraph
 
-    def get_rate(self, vert, directed = False):
+    def get_rate(self, vert, directed=False):
         if vert >= 0 and vert < self.n:
             degree = {"entry": 0, "exit": 0}
             for r in range(self.n):  # Corrigindo o loop range
@@ -88,7 +88,7 @@ class Matrix:
         for vert in range(self.n):
             # Para cada vértice não visitado no grafo, realiza uma busca em profundidade.
             if not visited[vert]:
-               t = Matrix.dfs(self, vert, visited, t)
+                t = Matrix.dfs(self, vert, visited, t)
 
         # Se, após a DFS a partir de todos os vértices, todos os vértices foram visitados,
         # O grafo é considerado conexo (todos os vértices estão conectados entre si).
@@ -122,19 +122,19 @@ class Matrix:
         # Marca o vértice como visitado
         visited[vert] = True
         visited_vertices = []
-        visited_vertices.append(vert)  # Adicione o vértice à lista de vértices visitados
+        # Adicione o vértice à lista de vértices visitados
+        visited_vertices.append(vert)
         t += 1
 
         # Percorre os vizinhos do vértice atual
         for neighbor in self.get_neighbors(vert):
             # Se o vizinho não foi visitado, realiza uma chamada recursiva à busca
             if not visited[neighbor]:
-                t = self.dfs(neighbor, visited, t, visited_vertices)
+                t = self.dfs(neighbor, visited, t)
 
         # Incrementa o contador de tempo em 1 novamente
         t += 1
         return visited_vertices  # Retorna a lista de vértices visitados
-
 
     def __str__(self):
         # Inicializa uma string vazia para armazenar a representação do grafo em formato de string.
@@ -175,18 +175,21 @@ class Matrix:
 
         visited = [False] * self.n
         queue = deque()
+        fila = []
 
         visited[origin] = True
         queue.append(origin)
 
         while queue:
             current_vertex = queue.popleft()
+            fila.append(current_vertex)
             print(f"Visitando vértice {current_vertex}")
 
             for neighbor in range(self.n):
                 if self.graph[current_vertex][neighbor] != "-" and not visited[neighbor]:
                     visited[neighbor] = True
                     queue.append(neighbor)
+        return fila
 
     def buscaCaminho(self, vertice_inicial):
         visitados = []

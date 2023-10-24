@@ -1,26 +1,29 @@
 from Lista import List
 from Matriz import Matrix
 
+
 def insertEdge(matrix: Matrix, list: List, directed):
     source = int(input("Vértice de origem: "))
     destination = int(input("Vértice de destino: "))
     weight = int(input("Peso da aresta (ou 1 para aresta não ponderada): "))
 
-    #-----LISTA------
+    # -----LISTA------
     list = list.add_edge(source, destination, weight, directed)
 
-    #-----MATRIZ-----
+    # -----MATRIZ-----
     matrix = matrix.add_edge(source, destination, weight)
+
 
 def removeEdge(matrix: Matrix, list: List, directed):
     source = int(input("Vértice de origem: "))
     destination = int(input("Vértice de destino: "))
 
-    #-----LISTA------
+    # -----LISTA------
     list = list.add_edge(source, directed)
 
-    #-----MATRIZ-----
+    # -----MATRIZ-----
     matrix = matrix.remove_edge(source, destination)
+
 
 def printGraph(matrix: Matrix, list: List):
     print("-----LISTA------")
@@ -31,12 +34,14 @@ def printGraph(matrix: Matrix, list: List):
     print("Matriz de Adjacência do Grafo:")
     print(matrix)
 
+
 def getVertexDegree(matrix: Matrix, list: List, directed):
     vert = int(input("Vértice que deseja consultar: "))
     print("-----LISTA------")
     degree = list.get_vertice_degree(vert, directed)
     if directed:
-        print(f"O grau de entrada do vértice {vert} é {degree['Entry']}, e saída é {degree['Output']}")
+        print(f"O grau de entrada do vértice {vert} é {
+              degree['Entry']}, e saída é {degree['Output']}")
     else:
         print(f"O grau do vertice {vert} é {degree}")
 
@@ -49,17 +54,20 @@ def getVertexDegree(matrix: Matrix, list: List, directed):
         degree = matrix.get_rate(vert)
         print(f"O grau do vertice {vert} é {degree['entry']}")
 
+
 def getGraphDegree(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     degree = list.get_graph_degree(directed)
     if directed:
-        print(f"O grau de entrada do grafo é {degree['Entry']}, e saída é {degree['Output']}")
+        print(f"O grau de entrada do grafo é {
+              degree['Entry']}, e saída é {degree['Output']}")
     else:
         print(f"O grau do grafo é {degree}")
 
     print("-----MATRIZ-----")
     graphDegree = matrix.get_graphDegree()
     print(f"Grau do grafo (matriz): {graphDegree}")
+
 
 def find_neighbors(matrix: Matrix, list: List, directed):
     vert = int(input("Qual o vértice que deseja: "))
@@ -78,7 +86,8 @@ def find_neighbors(matrix: Matrix, list: List, directed):
     else:
         print("Não há vizinhos")
 
-def is_connected(matrix: Matrix, list:List, directed):
+
+def is_connected(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     if list.is_connected():
         print("O grafo é conexo.")
@@ -97,6 +106,7 @@ def is_connected(matrix: Matrix, list:List, directed):
         else:
             print("O grafo não é fortemente conectado.")
 
+
 def is_regular(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     if list.is_regular():
@@ -109,6 +119,7 @@ def is_regular(matrix: Matrix, list: List, directed):
         print("O grafo é regular.")
     else:
         print("O grafo não é regular.")
+
 
 def is_complete(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
@@ -123,8 +134,10 @@ def is_complete(matrix: Matrix, list: List, directed):
     else:
         print("O grafo não é completo.")
 
+
 def depth_first_search(matrix: Matrix, list: List):
-    vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
+    vert = int(
+        input("Informe o vértice de partida para a busca em profundidade: "))
     print("-----LISTA------")
     search = list.dfs(vert)
     if len(search):
@@ -139,12 +152,13 @@ def depth_first_search(matrix: Matrix, list: List):
     parent = [-1] * matrix.n
     t = 0
     print("Realizando busca em profundidade a partir do vértice:", vert)
-    #t = matrix.depth_first_search(matrix.n, vert, visited, t)
+    # t = matrix.depth_first_search(matrix.n, vert, visited, t)
     search = matrix.dfs(vert, visited, t)
     if len(search):
         print(f"Resultado da busca: {search}")
     else:
         print("Nada encontrado")
+
 
 def breadth_first_search(matrix: Matrix, list: List):
     vert = int(input("Informe o vértice de partida para a busca em largura: "))
@@ -153,11 +167,7 @@ def breadth_first_search(matrix: Matrix, list: List):
 
     print("-----MATRIZ-----")
     print(f"Vertices visitados: {matrix.bfs(vert)}")
-    search = matrix.bfs
-    if len(search):
-        print(f"Resultado da busca: {search}")
-    else:
-        print("Nada encontrado")
+
 
 def get_path(matrix: Matrix, list: List, directed):
     source = int(input("Vértice de origem: "))
@@ -174,8 +184,10 @@ def get_path(matrix: Matrix, list: List, directed):
     if not matrix.get_Path(source, destination):
         print("Não há caminho")
 
+
 if __name__ == "__main__":
-    directed = bool(int(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): ")))
+    directed = bool(
+        int(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): ")))
     n = int(input("Informe o número de vértices: "))
     list = List(n)
     matrix = Matrix(n, directed)
