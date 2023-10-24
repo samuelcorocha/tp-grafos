@@ -5,7 +5,7 @@ class List:
         self.graph = []
         for i in range(n):
             self.graph.append([])
-        self.graph = {i+1: self.graph[i] for i in range(len(self.graph))}
+        self.graph = {i: self.graph[i] for i in range(len(self.graph))}
 
     def add_edge(self, v1, v2, weight=None, directed=False):
         self.graph[v1].append((v2, weight))

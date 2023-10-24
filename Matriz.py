@@ -7,7 +7,7 @@ class Matrix:
         self.graph = [["-"] * n for _ in range(n)]
         self.digraph: bool = digraph
 
-    def get_rate(self, vert):
+    def get_rate(self, vert, directed = False):
         if vert >= 0 and vert < self.n:
             degree = {"entry": 0, "exit": 0}
             for r in range(self.n):  # Corrigindo o loop range
@@ -15,6 +15,13 @@ class Matrix:
                     degree["entry"] += 1
                 if self.graph[r][vert] != "-":
                     degree["exit"] += 1
+
+            # Verifica se o vértice está ligado a si mesmo e, se estiver, incrementa ambos os graus
+            if not directed:
+                if self.graph[vert][vert] != "-":
+                    degree["entry"] += 1
+                    degree["exit"] += 1
+
             return degree
 
     def get_graphDegree(self):
@@ -81,7 +88,7 @@ class Matrix:
         for vert in range(self.n):
             # Para cada vértice não visitado no grafo, realiza uma busca em profundidade.
             if not visited[vert]:
-                t = self.depth_first_search(vert, visited, t)
+               t = Matrix.dfs(self, vert, visited, t)
 
         # Se, após a DFS a partir de todos os vértices, todos os vértices foram visitados,
         # O grafo é considerado conexo (todos os vértices estão conectados entre si).
@@ -93,7 +100,7 @@ class Matrix:
             # Inicializa uma lista 'visited' com 'False' para todos os vértices.
             visited = [False] * self.n
             # Realiza uma busca em profundidade a partir do vértice atual.
-            t = self.depth_first_search(vert, visited, 0)
+            t = self.dfs(vert, visited, 0)
             if not all(visited):
                 # Se, após a busca, algum vértice não foi visitado, o grafo não é fortemente conectado.
                 # Inverte o grafo (troca as direções das arestas)
@@ -104,7 +111,7 @@ class Matrix:
                 for vert in range(self.n):
                     visited = [False] * self.n
                     # Inicializa uma lista 'visited' com 'False' para todos os vértices.
-                    t = reversed_graph.depth_first_search(vert, visited, t)
+                    t = reversed_graph.dfs(vert, visited, t)
                     # Realiza uma busca em profundidade (DFS) no grafo invertido.
                     if not all(visited):
                         # Se, após a segunda DFS, algum vértice não foi visitado, o grafo não é fortemente conectado.
@@ -114,18 +121,20 @@ class Matrix:
     def dfs(self, vert, visited, t):
         # Marca o vértice como visitado
         visited[vert] = True
-        # Incrementa o contador de tempo em 1
+        visited_vertices = []
+        visited_vertices.append(vert)  # Adicione o vértice à lista de vértices visitados
         t += 1
 
         # Percorre os vizinhos do vértice atual
         for neighbor in self.get_neighbors(vert):
             # Se o vizinho não foi visitado, realiza uma chamada recursiva à busca
             if not visited[neighbor]:
-                t = self.depth_first_search(neighbor, visited, t)
+                t = self.dfs(neighbor, visited, t, visited_vertices)
 
         # Incrementa o contador de tempo em 1 novamente
         t += 1
-        return t
+        return visited_vertices  # Retorna a lista de vértices visitados
+
 
     def __str__(self):
         # Inicializa uma string vazia para armazenar a representação do grafo em formato de string.

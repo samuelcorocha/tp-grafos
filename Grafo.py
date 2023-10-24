@@ -42,7 +42,7 @@ def getVertexDegree(matrix: Matrix, list: List, directed):
 
     print("-----MATRIZ-----")
     if matrix.digraph:
-        degree = matrix.get_rate(vert)
+        degree = matrix.get_rate(vert, directed)
         print(
             f"O grau de entrada do vértice {vert} é {degree['entry']}, e saída é {degree['exit']}")
     else:
@@ -118,6 +118,10 @@ def is_complete(matrix: Matrix, list: List, directed):
         print("O grafo não é completo.")
 
     print("-----MATRIZ-----")
+    if matrix.is_complete():
+        print("O grafo é completo.")
+    else:
+        print("O grafo não é completo.")
 
 def depth_first_search(matrix: Matrix, list: List):
     vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
@@ -135,8 +139,8 @@ def depth_first_search(matrix: Matrix, list: List):
     parent = [-1] * matrix.n
     t = 0
     print("Realizando busca em profundidade a partir do vértice:", vert)
-    t = matrix.depth_first_search(matrix.n, vert, visited, t)
-    search = matrix.dfs
+    #t = matrix.depth_first_search(matrix.n, vert, visited, t)
+    search = matrix.dfs(vert, visited, t)
     if len(search):
         print(f"Resultado da busca: {search}")
     else:
@@ -228,3 +232,5 @@ if __name__ == "__main__":
 
         elif choice == 12:
             get_path(matrix, list, directed)
+        else:
+            break
