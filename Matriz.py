@@ -7,7 +7,7 @@ class Matrix:
         self.graph = [["-"] * n for _ in range(n)]
         self.digraph: bool = digraph
 
-    def get_rate(self, vert, directed=False):
+    def get_rate(self, vert):
         if vert >= 0 and vert < self.n:
             degree = {"entry": 0, "exit": 0}
             for r in range(self.n):  # Corrigindo o loop range
@@ -15,13 +15,6 @@ class Matrix:
                     degree["entry"] += 1
                 if self.graph[r][vert] != "-":
                     degree["exit"] += 1
-
-            # Verifica se o vértice está ligado a si mesmo e, se estiver, incrementa ambos os graus
-            if not directed:
-                if self.graph[vert][vert] != "-":
-                    degree["entry"] += 1
-                    degree["exit"] += 1
-
             return degree
 
     def get_graphDegree(self):
@@ -81,17 +74,17 @@ class Matrix:
 
     def is_connected(self):
         # Verifica se o grafo é conexo (para grafos não direcionados).
-        # Inicializa uma lista 'visited' com 'False' para todos os vértices.
         visited = [False] * self.n
-        t = 0
 
-        for vert in range(self.n):
-            # Para cada vértice não visitado no grafo, realiza uma busca em profundidade.
-            if not visited[vert]:
-                t = Matrix.dfs(self, vert, visited, t)
+        def dfs(vert):
+            visited[vert] = True
+            for neighbor in self.get_neighbors(vert):
+                if not visited[neighbor]:
+                    dfs(neighbor)
 
-        # Se, após a DFS a partir de todos os vértices, todos os vértices foram visitados,
-        # O grafo é considerado conexo (todos os vértices estão conectados entre si).
+        dfs(0)  # Executa a DFS a partir do vértice 0
+
+        # Verifica se todos os vértices foram visitados após a DFS
         return all(visited)
 
     def is_strongly_connected(self):
@@ -122,15 +115,14 @@ class Matrix:
         # Marca o vértice como visitado
         visited[vert] = True
         visited_vertices = []
-        # Adicione o vértice à lista de vértices visitados
-        visited_vertices.append(vert)
+        visited_vertices.append(vert)  # Adicione o vértice à lista de vértices visitados
         t += 1
 
         # Percorre os vizinhos do vértice atual
         for neighbor in self.get_neighbors(vert):
             # Se o vizinho não foi visitado, realiza uma chamada recursiva à busca
             if not visited[neighbor]:
-                t = self.dfs(neighbor, visited, t)
+                t = self.dfs(neighbor, visited, t, visited_vertices)
 
         # Incrementa o contador de tempo em 1 novamente
         t += 1
@@ -164,7 +156,7 @@ class Matrix:
     def is_complete(self):
         for i in range(self.n):
             for j in range(self.n):
-                if self.graph[i][j] == "-" and i != j:
+                if i != j and self.graph[i][j] == "-":
                     return False
         return True
 
@@ -223,3 +215,61 @@ class Matrix:
                     pilha.append(u)
 
         return False
+
+    def dijkstra(self, origin):
+        if origin < 0 or origin >= self.n:
+            raise ValueError("O vértice inicial está fora do intervalo válido.")
+
+        # Inicializa as distâncias a partir do vértice de origem como infinito para todos os vértices
+        distances = [float('inf')] * self.n
+        distances[origin] = 0
+
+        # Inicializa um conjunto para acompanhar os vértices já visitados
+        visited = set()
+
+        # Loop para encontrar o caminho mais curto para todos os vértices
+        while len(visited) < self.n:
+            # Escolhe o vértice não visitado mais próximo
+            min_distance = float('inf')
+            min_vertex = -1
+            for v in range(self.n):
+                if distances[v] < min_distance and v not in visited:
+                    min_distance = distances[v]
+                    min_vertex = v
+
+            # Adiciona o vértice escolhido ao conjunto de visitados
+            visited.add(min_vertex)
+
+            # Atualiza as distâncias dos vizinhos do vértice escolhido
+            for neighbor in self.get_neighbors(min_vertex):
+                weight = self.graph[min_vertex][neighbor]
+                if weight != "-" and distances[min_vertex] + weight < distances[neighbor]:
+                    distances[neighbor] = distances[min_vertex] + weight
+
+        return distances
+
+    def bellman_ford(self, origin):
+        if origin < 0 or origin >= self.n:
+            raise ValueError("O vértice inicial está fora do intervalo válido.")
+
+        # Inicializa as distâncias a partir do vértice de origem como infinito para todos os vértices
+        distances = [float('inf')] * self.n
+        distances[origin] = 0
+
+        # Revisa todas as arestas repetidamente para encontrar as distâncias mais curtas
+        for _ in range(self.n - 1):
+            for u in range(self.n):
+                for v in range(self.n):
+                    weight = self.graph[u][v]
+                    if weight != "-" and distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                        distances[v] = distances[u] + weight
+
+        # Verifica se há ciclos negativos
+        for u in range(self.n):
+            for v in range(self.n):
+                weight = self.graph[u][v]
+                if weight != "-" and distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                    # Se ainda houver uma atualização, indica a existência de ciclo negativo
+                    raise ValueError("O grafo contém ciclo negativo")
+
+        return distances
