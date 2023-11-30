@@ -115,7 +115,8 @@ class Matrix:
         # Marca o vértice como visitado
         visited[vert] = True
         visited_vertices = []
-        visited_vertices.append(vert)  # Adicione o vértice à lista de vértices visitados
+        # Adicione o vértice à lista de vértices visitados
+        visited_vertices.append(vert)
         t += 1
 
         # Percorre os vizinhos do vértice atual
@@ -218,7 +219,8 @@ class Matrix:
 
     def dijkstra(self, origin):
         if origin < 0 or origin >= self.n:
-            raise ValueError("O vértice inicial está fora do intervalo válido.")
+            raise ValueError(
+                "O vértice inicial está fora do intervalo válido.")
 
         # Inicializa as distâncias a partir do vértice de origem como infinito para todos os vértices
         distances = [float('inf')] * self.n
@@ -250,7 +252,8 @@ class Matrix:
 
     def bellman_ford(self, origin):
         if origin < 0 or origin >= self.n:
-            raise ValueError("O vértice inicial está fora do intervalo válido.")
+            raise ValueError(
+                "O vértice inicial está fora do intervalo válido.")
 
         # Inicializa as distâncias a partir do vértice de origem como infinito para todos os vértices
         distances = [float('inf')] * self.n
@@ -273,3 +276,20 @@ class Matrix:
                     raise ValueError("O grafo contém ciclo negativo")
 
         return distances
+
+    def floyd_Warshall(self):
+        dist = self.graph
+        for i in range(self.n):
+            for j in range(self.n):
+                if i != j:
+                    if self.graph[i][j] != "-":
+                        dist[i][j] = self.graph[i][j]
+                    else:
+                        dist[i][j] = float("inf")
+                dist[i][i] = 0
+        for i in range(self.n):
+            for j in range(self.n):
+                for k in range(self.n):
+                    if (dist[i][j] > dist[i][k] + dist[k][j]):
+                        dist[i][j] = dist[i][k] + dist[k][j]
+        print(dist)
