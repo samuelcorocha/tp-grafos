@@ -1,4 +1,5 @@
 from collections import deque
+import heapq
 
 
 class Matrix:
@@ -28,12 +29,15 @@ class Matrix:
     def add_edge(self, source, destination, weight=1):
         # Adiciona uma aresta ao grafo, conectando o vértice de origem ao vértice de destino com um peso opcional.
         if source >= 0 and source < self.n and destination >= 0 and destination < self.n:
+            if self.graph[destination][source] != "-" and not self.digraph:
+                return
+
             # Verifica se os vértices de origem e destino são válidos.
             self.graph[source][destination] = weight
             # Define o valor da matriz de adjacência para representar a conexão entre os vértices com o peso especificado.
-        if not self.digraph:
-            # Se o grafo não for direcionado, é necessário adicionar a aresta no sentido oposto.
-            self.graph[destination][source] = weight
+            if not self.digraph:
+                # Se o grafo não for direcionado, é necessário adicionar a aresta no sentido oposto.
+                self.graph[destination][source] = weight
 
     def remove_edge(self, source, destination):
         # Remove uma aresta do grafo, desconectando o vértice de origem do vértice de destino.
@@ -293,3 +297,22 @@ class Matrix:
                     if (dist[i][j] > dist[i][k] + dist[k][j]):
                         dist[i][j] = dist[i][k] + dist[k][j]
         print(dist)
+
+    def astar(self, start, goal):
+        heap = [(0, start)]
+        visited = set()
+        while heap:
+            (cost, node) = heapq.heappop(heap)
+            if node in visited:
+                continue
+
+            visited.add(node)
+
+            if node == goal:
+                return cost
+
+            for next_node, weight in enumerate(self.graph[node]):
+                if weight != "-":
+                    heapq.heappush(heap, (cost + int(weight), next_node))
+
+        return float('inf')
