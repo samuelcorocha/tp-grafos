@@ -19,7 +19,7 @@ def removeEdge(matrix: Matrix, list: List, directed):
     destination = int(input("Vértice de destino: "))
 
     # -----LISTA------
-    list = list.add_edge(source, directed)
+    list = list.remove_edge(source, directed)
 
     # -----MATRIZ-----
     matrix = matrix.remove_edge(source, destination)
@@ -183,7 +183,22 @@ def get_path(matrix: Matrix, list: List, directed):
     print("-----MATRIZ-----")
     if not matrix.get_Path(source, destination):
         print("Não há caminho")
-
+        
+def dijkstra(matrix: Matrix, list: List, directed):
+    print("-----LISTA------")
+    print("-----MATRIZ-----")
+    
+def bellman_ford(matrix: Matrix, list: List, directed):
+    print("-----LISTA------")
+    print("-----MATRIZ-----")
+        
+def floyd_warshall(matrix: Matrix, list: List, directed):
+    print("-----LISTA------")
+    print("-----MATRIZ-----")
+        
+def a_star(matrix: Matrix, list: List, directed):
+    print("-----LISTA------")
+    print("-----MATRIZ-----")
 
 if __name__ == "__main__":
     directed = bool(
@@ -206,6 +221,10 @@ if __name__ == "__main__":
         print("10. Busca em profundidade")
         print("11. Busca em largura")
         print("12. Verificar se há caminho")
+        print("12. Algoritmo de Dijkstra")
+        print("12. Algoritmo de Bellman-Ford")
+        print("12. Algoritmo de Floyd-Warshall")
+        print("12. Algoritmo A*")
 
         choice = int(input("Escolha uma opção: "))
 
@@ -244,5 +263,18 @@ if __name__ == "__main__":
 
         elif choice == 12:
             get_path(matrix, list, directed)
+
+        elif choice == 13:
+            dijkstra(matrix, list, directed)
+
+        elif choice == 14:
+            bellman_ford(matrix, list, directed)
+
+        elif choice == 15:
+            floyd_warshall(matrix, list, directed)
+            
+        elif choice == 16:
+            a_star(matrix, list, directed)
+            
         else:
             break
