@@ -134,8 +134,7 @@ def is_complete(matrix: Matrix, list: List, directed):
 
 
 def depth_first_search(matrix: Matrix, list: List):
-    vert = int(
-        input("Informe o vértice de partida para a busca em profundidade: "))
+    vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
     print("-----LISTA------")
     search = list.dfs(vert)
     if len(search):
@@ -183,17 +182,16 @@ def get_path(matrix: Matrix, list: List, directed):
         print("Não há caminho")
 
 
-def dijkstra(matrix: Matrix, list: List, directed):
+def dijkstra(matrix: Matrix, list: List):
     source = int(input("Vértice de origem: "))
     print("-----LISTA------")
     dist = list.dijkstra(source)
     print(dist)
     print("-----MATRIZ-----")
-    source = int(input("Vértice de origem: "))
     matrix.dijkstra(source)
 
 
-def bellman_ford(matrix: Matrix, list: List, directed):
+def bellman_ford(matrix: Matrix, list: List):
     source = int(input("Vértice de origem: "))
     print("-----LISTA------")
     resultado = list.bellman_ford(source)
@@ -204,12 +202,13 @@ def bellman_ford(matrix: Matrix, list: List, directed):
         print("Distâncias a partir do vértice de origem:", distancias)
         print("Predecessores:", predecessores)
     print("-----MATRIZ-----")
-    source = int(input("Vértice de origem: "))
     matrix.bellman_ford(source)
 
 
-def floyd_warshall(matrix: Matrix, list: List, directed):
+def floyd_warshall(matrix: Matrix, list: List):
     print("-----LISTA------")
+    resultado = list.floyd_warshall()
+    print(resultado)
     print("-----MATRIZ-----")
     matrix.floyd_Warshall()
 
@@ -217,11 +216,19 @@ def floyd_warshall(matrix: Matrix, list: List, directed):
 def a_star(matrix: Matrix, list: List):
     start_state = int(input("Vértice de partida: "))
     goal_state = int(input("Vértice de destino: "))
+    print("-----LISTA------")
+    path = list.a_star(start_state, goal_state)
+    print("-----MATRIZ-----")
     path = matrix.astar(start_state, goal_state)
     print("Caminho encontrado:", path)
 
 
 def autofill(matrix: Matrix, list: List):
+    for i in range(0, list.n):
+        for j in range(0, list.n):
+            if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo
+                weight = random.randint(1, 10)
+                list.add_edge(i, j, weight)
     for i in range(0, matrix.n):
         for j in range(0, matrix.n):
             if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo
@@ -230,8 +237,7 @@ def autofill(matrix: Matrix, list: List):
 
 
 if __name__ == "__main__":
-    directed = bool(
-        int(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): ")))
+    directed = bool(int(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): ")))
     n = int(input("Informe o número de vértices: "))
     list = List(n)
     matrix = Matrix(n, directed)

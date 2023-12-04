@@ -1,4 +1,5 @@
 from collections import deque
+import heapq
 class List:
 
     def __init__(self, n):
@@ -236,15 +237,15 @@ class List:
 
         return dist, pred
     
-    def floyd_warshall(graph):
-        n = len(graph)
+    def floyd_warshall(self):
+        n = len(self.graph)
         dist = [[float('inf')]*n for _ in range(n)]
         
         for i in range(n):
             dist[i][i] = 0
 
         for u in range(n):
-            for v, w in graph[u]:
+            for v, w in self.graph[u]:
                 dist[u][v] = w
 
         for k in range(n):
@@ -253,3 +254,32 @@ class List:
                     dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
         return dist
+    
+    def a_star(self, start, goal):
+        open_list = []
+        g = {v: float('inf') for v in self.graph}
+        f = {v: float('inf') for v in self.graph}
+        g[start] = 0
+        f[start] = h(start, goal)
+        heapq.heappush(open_list, (f[start], start))
+        parent = {start: None}
+
+        while open_list:
+            _, current = heapq.heappop(open_list)
+
+            if current == goal:
+                path = []
+                while current is not None:
+                    path.append(current)
+                    current = parent[current]
+                return path[::-1], g[goal]  # Retorna o caminho e a distância
+
+            for neighbor, weight in self.graph[current]:
+                tentative_g = g[current] + weight
+                if tentative_g < g[neighbor]:
+                    parent[neighbor] = current
+                    g[neighbor] = tentative_g
+                    f[neighbor] = g[neighbor] + self.dijksta(neighbor, goal)
+                    heapq.heappush(open_list, (f[neighbor], neighbor))
+
+        return None, float('inf')  # Retorna None e infinito se não houver caminho
