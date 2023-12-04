@@ -1,5 +1,6 @@
 from Lista import List
 from Matriz import Matrix
+import random
 
 
 def insertEdge(matrix: Matrix, list: List, directed):
@@ -180,14 +181,18 @@ def get_path(matrix: Matrix, list: List, directed):
     print("-----MATRIZ-----")
     if not matrix.get_Path(source, destination):
         print("Não há caminho")
-        
+
+
 def dijkstra(matrix: Matrix, list: List, directed):
     source = int(input("Vértice de origem: "))
     print("-----LISTA------")
     dist = list.dijkstra(source)
     print(dist)
     print("-----MATRIZ-----")
-    
+    source = int(input("Vértice de origem: "))
+    matrix.dijkstra(source)
+
+
 def bellman_ford(matrix: Matrix, list: List, directed):
     source = int(input("Vértice de origem: "))
     print("-----LISTA------")
@@ -199,14 +204,30 @@ def bellman_ford(matrix: Matrix, list: List, directed):
         print("Distâncias a partir do vértice de origem:", distancias)
         print("Predecessores:", predecessores)
     print("-----MATRIZ-----")
-        
+    source = int(input("Vértice de origem: "))
+    matrix.bellman_ford(source)
+
+
 def floyd_warshall(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     print("-----MATRIZ-----")
-        
-def a_star(matrix: Matrix, list: List, directed):
-    print("-----LISTA------")
-    print("-----MATRIZ-----")
+    matrix.floyd_Warshall()
+
+
+def a_star(matrix: Matrix, list: List):
+    start_state = int(input("Vértice de partida: "))
+    goal_state = int(input("Vértice de destino: "))
+    path = matrix.astar(start_state, goal_state)
+    print("Caminho encontrado:", path)
+
+
+def autofill(matrix: Matrix, list: List):
+    for i in range(0, matrix.n):
+        for j in range(0, matrix.n):
+            if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo
+                weight = random.randint(1, 10)
+                matrix.add_edge(i, j, weight)
+
 
 if __name__ == "__main__":
     directed = bool(
@@ -229,60 +250,46 @@ if __name__ == "__main__":
         print("10. Busca em profundidade")
         print("11. Busca em largura")
         print("12. Verificar se há caminho")
-        print("12. Algoritmo de Dijkstra")
-        print("12. Algoritmo de Bellman-Ford")
-        print("12. Algoritmo de Floyd-Warshall")
-        print("12. Algoritmo A*")
+        print("13. Algoritmo Dijkstra")
+        print("14. Algoritmo Bellman e Ford")
+        print("15. Algoritmo Floyd Warshall")
+        print("16. Algoritmo A*")
+        print("17. Preencher automaticamente")
 
         choice = int(input("Escolha uma opção: "))
 
-        if choice == 1:
-            insertEdge(matrix, list, directed)
-
-        elif choice == 2:
-            removeEdge(matrix, list, directed)
-
-        elif choice == 3:
-            printGraph(matrix, list)
-
-        elif choice == 4:
-            getVertexDegree(matrix, list, directed)
-
-        elif choice == 5:
-            getGraphDegree(matrix, list, directed)
-
-        elif choice == 6:
-            find_neighbors(matrix, list, directed)
-
-        elif choice == 7:
-            is_connected(matrix, list, directed)
-
-        elif choice == 8:
-            is_regular(matrix, list, directed)
-
-        elif choice == 9:
-            is_complete(matrix, list, directed)
-
-        elif choice == 10:
-            depth_first_search(matrix, list)
-
-        elif choice == 11:
-            breadth_first_search(matrix, list)
-
-        elif choice == 12:
-            get_path(matrix, list, directed)
-
-        elif choice == 13:
-            dijkstra(matrix, list, directed)
-
-        elif choice == 14:
-            bellman_ford(matrix, list, directed)
-
-        elif choice == 15:
-            floyd_warshall(matrix, list, directed)
-            
-        elif choice == 16:
-            a_star(matrix, list, directed)
-            
-        else:
-            break
+        match choice:
+            case 1:
+                insertEdge(matrix, list, directed)
+            case 2:
+                removeEdge(matrix, list, directed)
+            case 3:
+                printGraph(matrix, list)
+            case 4:
+                getVertexDegree(matrix, list, directed)
+            case 5:
+                getGraphDegree(matrix, list, directed)
+            case 6:
+                find_neighbors(matrix, list, directed)
+            case 7:
+                is_connected(matrix, list, directed)
+            case 8:
+                is_regular(matrix, list, directed)
+            case 9:
+                is_complete(matrix, list, directed)
+            case 10:
+                depth_first_search(matrix, list)
+            case 11:
+                breadth_first_search(matrix, list)
+            case 12:
+                get_path(matrix, list, directed)
+            case 13:
+                dijkstra(matrix, list)
+            case 14:
+                bellman_ford(matrix, list)
+            case 15:
+                floyd_warshall(matrix, list)
+            case 16:
+                a_star(matrix, list)
+            case 17:
+                autofill(matrix, list)
