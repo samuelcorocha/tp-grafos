@@ -190,3 +190,66 @@ class List:
         
         dfs_aux(v1)
         return path
+
+    def dijkstra(self, start):
+        import math
+        import heapq
+
+        # Inicialização
+        dist = [math.inf for _ in range(len(self.graph))]
+        visited = [0 for _ in range(len(self.graph))]
+        dist[start] = 0
+
+        # Fila de prioridade
+        queue = [(0, start)]
+
+        while queue:
+            _, v = heapq.heappop(queue)
+            if visited[v] == 0:
+                visited[v] = 1
+                for neighbor, weight in self.graph[v]:
+                    if dist[neighbor] > dist[v] + weight:
+                        dist[neighbor] = dist[v] + weight
+                        heapq.heappush(queue, (dist[neighbor], neighbor))
+        return dist 
+
+    def bellman_ford(self, source):
+        V = len(self.graph)
+        dist = [float('inf')] * V
+        pred = [None] * V
+
+        dist[source] = 0
+
+        for _ in range(V - 1):
+            for u in range(V):
+                for v, weight in self.graph[u]:
+                    if dist[u] != float('inf') and dist[u] + weight < dist[v]:
+                        dist[v] = dist[u] + weight
+                        pred[v] = u
+
+        # Verificar por ciclos de peso negativo
+        for u in range(V):
+            for v, weight in self.graph[u]:
+                if dist[u] != float('inf') and dist[u] + weight < dist[v]:
+                    # Encontrou um ciclo de peso negativo
+                    return "O grafo contém ciclo de peso negativo"
+
+        return dist, pred
+    
+    def floyd_warshall(graph):
+        n = len(graph)
+        dist = [[float('inf')]*n for _ in range(n)]
+        
+        for i in range(n):
+            dist[i][i] = 0
+
+        for u in range(n):
+            for v, w in graph[u]:
+                dist[u][v] = w
+
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+        return dist
