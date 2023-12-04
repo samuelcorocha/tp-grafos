@@ -41,16 +41,14 @@ def getVertexDegree(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     degree = list.get_vertice_degree(vert, directed)
     if directed:
-        print(f"O grau de entrada do vértice {vert} é {
-              degree['Entry']}, e saída é {degree['Output']}")
+        print(f"O grau de entrada do vértice {vert} é {degree['Entry']}, e saída é {degree['Output']}")
     else:
         print(f"O grau do vertice {vert} é {degree}")
 
     print("-----MATRIZ-----")
     if matrix.digraph:
         degree = matrix.get_rate(vert, directed)
-        print(
-            f"O grau de entrada do vértice {vert} é {degree['entry']}, e saída é {degree['exit']}")
+        print(f"O grau de entrada do vértice {vert} é {degree['entry']}, e saída é {degree['exit']}")
     else:
         degree = matrix.get_rate(vert)
         print(f"O grau do vertice {vert} é {degree['entry']}")
@@ -60,8 +58,7 @@ def getGraphDegree(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     degree = list.get_graph_degree(directed)
     if directed:
-        print(f"O grau de entrada do grafo é {
-              degree['Entry']}, e saída é {degree['Output']}")
+        print(f"O grau de entrada do grafo é {degree['Entry']}, e saída é {degree['Output']}")
     else:
         print(f"O grau do grafo é {degree}")
 
@@ -187,14 +184,25 @@ def get_path(matrix: Matrix, list: List, directed):
 
 
 def dijkstra(matrix: Matrix, list: List, directed):
+    source = int(input("Vértice de origem: "))
     print("-----LISTA------")
+    dist = list.dijkstra(source)
+    print(dist)
     print("-----MATRIZ-----")
     source = int(input("Vértice de origem: "))
     matrix.dijkstra(source)
 
 
 def bellman_ford(matrix: Matrix, list: List, directed):
+    source = int(input("Vértice de origem: "))
     print("-----LISTA------")
+    resultado = list.bellman_ford(source)
+    if isinstance(resultado, str):
+        print(resultado)  # Se houver um ciclo de peso negativo
+    else:
+        distancias, predecessores = resultado
+        print("Distâncias a partir do vértice de origem:", distancias)
+        print("Predecessores:", predecessores)
     print("-----MATRIZ-----")
     source = int(input("Vértice de origem: "))
     matrix.bellman_ford(source)
@@ -246,6 +254,7 @@ if __name__ == "__main__":
         print("14. Algoritmo Bellman e Ford")
         print("15. Algoritmo Floyd Warshall")
         print("16. Algoritmo A*")
+        print("17. Preencher automaticamente")
 
         choice = int(input("Escolha uma opção: "))
 
