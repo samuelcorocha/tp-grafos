@@ -188,7 +188,8 @@ def dijkstra(matrix: Matrix, list: List):
     dist = list.dijkstra(source)
     print(dist)
     print("-----MATRIZ-----")
-    matrix.dijkstra(source)
+    dist = matrix.dijkstra(source)
+    print(dist)
 
 
 def bellman_ford(matrix: Matrix, list: List):
@@ -202,7 +203,8 @@ def bellman_ford(matrix: Matrix, list: List):
         print("Distâncias a partir do vértice de origem:", distancias)
         print("Predecessores:", predecessores)
     print("-----MATRIZ-----")
-    matrix.bellman_ford(source)
+    dist = matrix.bellman_ford(source)
+    print(dist)
 
 
 def floyd_warshall(matrix: Matrix, list: List):
@@ -218,17 +220,18 @@ def a_star(matrix: Matrix, list: List):
     goal_state = int(input("Vértice de destino: "))
     print("-----LISTA------")
     path = list.a_star(start_state, goal_state)
+    print("Caminho encontrado:", path)
     print("-----MATRIZ-----")
     path = matrix.astar(start_state, goal_state)
     print("Caminho encontrado:", path)
 
 
 def autofill(matrix: Matrix, list: List):
-    for i in range(0, list.n):
-        for j in range(0, list.n):
+    for i in range(len(list.graph)):
+        for j in range(len(list.graph)):
             if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo
                 weight = random.randint(1, 10)
-                list.add_edge(i, j, weight)
+                list.add_edge(i, j, weight, directed)
     for i in range(0, matrix.n):
         for j in range(0, matrix.n):
             if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo

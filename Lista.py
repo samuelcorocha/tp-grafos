@@ -192,50 +192,52 @@ class List:
         dfs_aux(v1)
         return path
 
-    def dijkstra(self, start):
-        import math
-        import heapq
+    def print_solution(self, distancias):
+        print("Vertice \tDistancia do Vertice de Origem")
+        for node in range(self.V):
+            print(node, "\t", distancias[node])
 
-        # Inicialização
-        dist = [math.inf for _ in range(len(self.graph))]
-        visited = [0 for _ in range(len(self.graph))]
-        dist[start] = 0
+    def min_distance(self, distancias, visitados):
+        min_dist = float('inf')
+        for v in range(self.V):
+            if distancias[v] < min_dist and visitados[v] == False:
+                min_dist = distancias[v]
+                min_index = v
+        return min_index
 
-        # Fila de prioridade
-        queue = [(0, start)]
+    def dijkstra(self, vertice_origem):
+        distancias = [float('inf')] * self.V
+        distancias[vertice_origem] = 0
+        visitados = [False] * self.V
 
-        while queue:
-            _, v = heapq.heappop(queue)
-            if visited[v] == 0:
-                visited[v] = 1
-                for neighbor, weight in self.graph[v]:
-                    if dist[neighbor] > dist[v] + weight:
-                        dist[neighbor] = dist[v] + weight
-                        heapq.heappush(queue, (dist[neighbor], neighbor))
-        return dist 
+        for cout in range(self.V):
+            u = self.min_distance(distancias, visitados)
+            visitados[u] = True
 
-    def bellman_ford(self, source):
-        V = len(self.graph)
-        dist = [float('inf')] * V
-        pred = [None] * V
+            for v in range(self.V):
+                if self.grafo[u][v] > 0 and visitados[v] == False and distancias[v] > distancias[u] + self.grafo[u][v]:
+                    distancias[v] = distancias[u] + self.grafo[u][v]
 
-        dist[source] = 0
+        self.print_solution(distancias)
 
-        for _ in range(V - 1):
-            for u in range(V):
-                for v, weight in self.graph[u]:
-                    if dist[u] != float('inf') and dist[u] + weight < dist[v]:
-                        dist[v] = dist[u] + weight
-                        pred[v] = u
+    def bellman_ford(self, origem):
+        distancias = [float('inf')] * len(self.graph)
+        predecessores = [None] * len(self.graph)
+        distancias[origem] = 0
 
-        # Verificar por ciclos de peso negativo
-        for u in range(V):
-            for v, weight in self.graph[u]:
-                if dist[u] != float('inf') and dist[u] + weight < dist[v]:
-                    # Encontrou um ciclo de peso negativo
+        for _ in range(len(self.graph) - 1):
+            for u in range(len(self.graph)):
+                for v, peso in self.graph[u]:
+                    if distancias[u] != float('inf') and distancias[u] + peso < distancias[v]:
+                        distancias[v] = distancias[u] + peso
+                        predecessores[v] = u
+
+        for u in range(len(self.graph)):
+            for v, peso in self.graph[u]:
+                if distancias[u] != float('inf') and distancias[u] + peso < distancias[v]:
                     return "O grafo contém ciclo de peso negativo"
 
-        return dist, pred
+        self.print_solution(distancias, predecessores)
     
     def floyd_warshall(self):
         n = len(self.graph)
