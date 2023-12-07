@@ -1,5 +1,6 @@
 from Lista import List
 from Matriz import Matrix
+import random
 
 
 def insertEdge(matrix: Matrix, list: List, directed):
@@ -40,16 +41,14 @@ def getVertexDegree(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     degree = list.get_vertice_degree(vert, directed)
     if directed:
-        print(f"O grau de entrada do vértice {vert} é {
-              degree['Entry']}, e saída é {degree['Output']}")
+        print(f"O grau de entrada do vértice {vert} é {degree['Entry']}, e saída é {degree['Output']}")
     else:
         print(f"O grau do vertice {vert} é {degree}")
 
     print("-----MATRIZ-----")
     if matrix.digraph:
         degree = matrix.get_rate(vert, directed)
-        print(
-            f"O grau de entrada do vértice {vert} é {degree['entry']}, e saída é {degree['exit']}")
+        print(f"O grau de entrada do vértice {vert} é {degree['entry']}, e saída é {degree['exit']}")
     else:
         degree = matrix.get_rate(vert)
         print(f"O grau do vertice {vert} é {degree['entry']}")
@@ -59,8 +58,7 @@ def getGraphDegree(matrix: Matrix, list: List, directed):
     print("-----LISTA------")
     degree = list.get_graph_degree(directed)
     if directed:
-        print(f"O grau de entrada do grafo é {
-              degree['Entry']}, e saída é {degree['Output']}")
+        print(f"O grau de entrada do grafo é {degree['Entry']}, e saída é {degree['Output']}")
     else:
         print(f"O grau do grafo é {degree}")
 
@@ -136,8 +134,7 @@ def is_complete(matrix: Matrix, list: List, directed):
 
 
 def depth_first_search(matrix: Matrix, list: List):
-    vert = int(
-        input("Informe o vértice de partida para a busca em profundidade: "))
+    vert = int(input("Informe o vértice de partida para a busca em profundidade: "))
     print("-----LISTA------")
     search = list.dfs(vert)
     if len(search):
@@ -146,18 +143,7 @@ def depth_first_search(matrix: Matrix, list: List):
         print("Nada encontrado")
 
     print("-----MATRIZ-----")
-    visited = [False] * matrix.n
-    TD = [0] * matrix.n
-    TT = [0] * matrix.n
-    parent = [-1] * matrix.n
-    t = 0
-    print("Realizando busca em profundidade a partir do vértice:", vert)
-    # t = matrix.depth_first_search(matrix.n, vert, visited, t)
-    search = matrix.dfs(vert, visited, t)
-    if len(search):
-        print(f"Resultado da busca: {search}")
-    else:
-        print("Nada encontrado")
+    matrix.depth_first_search(vert)
 
 
 def breadth_first_search(matrix: Matrix, list: List):
@@ -183,26 +169,74 @@ def get_path(matrix: Matrix, list: List, directed):
     print("-----MATRIZ-----")
     if not matrix.get_Path(source, destination):
         print("Não há caminho")
-        
-def dijkstra(matrix: Matrix, list: List, directed):
+
+
+def dijkstra(matrix: Matrix, list: List):
+    source = int(input("Vértice de origem: "))
     print("-----LISTA------")
+    dist = list.dijkstra(source)
+    print(dist)
     print("-----MATRIZ-----")
+    # Solicite ao usuário o vértice de início
+    start_vertex = int(input("Informe o vértice de partida para o algoritmo de Dijkstra: "))
+    result = matrix.dijkstra(start_vertex)
+
+    print("Distâncias mínimas a partir do vértice", start_vertex, ":", result)
+
+
+def bellman_ford(matrix: Matrix, lista: List):
+    source = int(input("Vértice de origem: "))
     
-def bellman_ford(matrix: Matrix, list: List, directed):
+    # Aplica Bellman-Ford na lista
     print("-----LISTA------")
+    resultado_lista = lista.bellman_ford(source)
+    if isinstance(resultado_lista, str):
+        print(resultado_lista)  # Se houver um ciclo de peso negativo
+    else:
+        distancias_lista, predecessores_lista = resultado_lista
+        print("Distâncias a partir do vértice de origem (lista):", distancias_lista)
+        print("Predecessores (lista):", predecessores_lista)
+
+    # Aplica Bellman-Ford na matriz
     print("-----MATRIZ-----")
-        
-def floyd_warshall(matrix: Matrix, list: List, directed):
+    resultado_matriz = matrix.bellman_ford(source)
+    if isinstance(resultado_matriz, str):
+        print(resultado_matriz)  # Se houver um ciclo de peso negativo
+    else:
+        distancias_matriz, predecessores_matriz = resultado_matriz
+        print("Distâncias a partir do vértice de origem (matriz):", distancias_matriz)
+        print("Predecessores (matriz):", predecessores_matriz)
+
+
+def floyd_warshall(matrix: Matrix, list: List):
     print("-----LISTA------")
+    resultado = list.floyd_warshall()
+    print(resultado)
     print("-----MATRIZ-----")
-        
-def a_star(matrix: Matrix, list: List, directed):
+    matrix.floyd_Warshall()
+
+
+def a_star(matrix: Matrix, list: List):
+    start_state = int(input("Vértice de partida: "))
+    goal_state = int(input("Vértice de destino: "))
     print("-----LISTA------")
+    path = list.a_star(start_state, goal_state)
     print("-----MATRIZ-----")
+    path = matrix.astar(start_state, goal_state)
+    print("Caminho encontrado:", path)
+
+
+def autofill(matrix: Matrix, lista: List, directed: bool):
+    for i in range(len(lista.graph)):
+        for j in range(len(lista.graph)):
+            if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo
+                weight = random.randint(1, 10)
+                lista.add_edge(i, j, weight, directed)
+                matrix.add_edge(i, j, weight)
+
 
 if __name__ == "__main__":
-    directed = bool(
-        int(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): ")))
+    directed = bool(int(input("O grafo será direcionado? (1- Direcionado / 0- Não direcionado): ")))
     n = int(input("Informe o número de vértices: "))
     list = List(n)
     matrix = Matrix(n, directed)
@@ -221,60 +255,46 @@ if __name__ == "__main__":
         print("10. Busca em profundidade")
         print("11. Busca em largura")
         print("12. Verificar se há caminho")
-        print("12. Algoritmo de Dijkstra")
-        print("12. Algoritmo de Bellman-Ford")
-        print("12. Algoritmo de Floyd-Warshall")
-        print("12. Algoritmo A*")
+        print("13. Algoritmo Dijkstra")
+        print("14. Algoritmo Bellman e Ford")
+        print("15. Algoritmo Floyd Warshall")
+        print("16. Algoritmo A*")
+        print("17. Preencher automaticamente")
 
         choice = int(input("Escolha uma opção: "))
 
-        if choice == 1:
-            insertEdge(matrix, list, directed)
-
-        elif choice == 2:
-            removeEdge(matrix, list, directed)
-
-        elif choice == 3:
-            printGraph(matrix, list)
-
-        elif choice == 4:
-            getVertexDegree(matrix, list, directed)
-
-        elif choice == 5:
-            getGraphDegree(matrix, list, directed)
-
-        elif choice == 6:
-            find_neighbors(matrix, list, directed)
-
-        elif choice == 7:
-            is_connected(matrix, list, directed)
-
-        elif choice == 8:
-            is_regular(matrix, list, directed)
-
-        elif choice == 9:
-            is_complete(matrix, list, directed)
-
-        elif choice == 10:
-            depth_first_search(matrix, list)
-
-        elif choice == 11:
-            breadth_first_search(matrix, list)
-
-        elif choice == 12:
-            get_path(matrix, list, directed)
-
-        elif choice == 13:
-            dijkstra(matrix, list, directed)
-
-        elif choice == 14:
-            bellman_ford(matrix, list, directed)
-
-        elif choice == 15:
-            floyd_warshall(matrix, list, directed)
-            
-        elif choice == 16:
-            a_star(matrix, list, directed)
-            
-        else:
-            break
+        match choice:
+            case 1:
+                insertEdge(matrix, list, directed)
+            case 2:
+                removeEdge(matrix, list, directed)
+            case 3:
+                printGraph(matrix, list)
+            case 4:
+                getVertexDegree(matrix, list, directed)
+            case 5:
+                getGraphDegree(matrix, list, directed)
+            case 6:
+                find_neighbors(matrix, list, directed)
+            case 7:
+                is_connected(matrix, list, directed)
+            case 8:
+                is_regular(matrix, list, directed)
+            case 9:
+                is_complete(matrix, list, directed)
+            case 10:
+                depth_first_search(matrix, list)
+            case 11:
+                breadth_first_search(matrix, list)
+            case 12:
+                get_path(matrix, list, directed)
+            case 13:
+                dijkstra(matrix, list)
+            case 14:
+                bellman_ford(matrix, list)
+            case 15:
+                floyd_warshall(matrix, list)
+            case 16:
+                a_star(matrix, list)
+            case 17:
+                autofill(matrix, list, directed)
