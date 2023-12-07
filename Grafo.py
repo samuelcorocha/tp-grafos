@@ -1,6 +1,7 @@
 from Lista import List
 from Matriz import Matrix
 import random
+import time
 
 
 def insertEdge(matrix: Matrix, list: List, directed):
@@ -174,64 +175,82 @@ def get_path(matrix: Matrix, list: List, directed):
 def dijkstra(matrix: Matrix, list: List):
     source = int(input("Vértice de origem: "))
     print("-----LISTA------")
-    dist = list.dijkstra(source)
-    print(dist)
+    ini = time.time()
+    list.dijkstra(source)
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
     print("-----MATRIZ-----")
-    # Solicite ao usuário o vértice de início
-    start_vertex = int(input("Informe o vértice de partida para o algoritmo de Dijkstra: "))
-    result = matrix.dijkstra(start_vertex)
-
-    print("Distâncias mínimas a partir do vértice", start_vertex, ":", result)
-
+    ini = time.time()
+    result = matrix.dijkstra(source)
+    print("Distâncias mínimas a partir do vértice",source, ":", result)
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
 
 def bellman_ford(matrix: Matrix, lista: List):
     source = int(input("Vértice de origem: "))
     
     # Aplica Bellman-Ford na lista
     print("-----LISTA------")
-    resultado_lista = lista.bellman_ford(source)
-    if isinstance(resultado_lista, str):
-        print(resultado_lista)  # Se houver um ciclo de peso negativo
-    else:
-        distancias_lista, predecessores_lista = resultado_lista
-        print("Distâncias a partir do vértice de origem (lista):", distancias_lista)
-        print("Predecessores (lista):", predecessores_lista)
+    ini = time.time()
+    list.bellman_ford(source)
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
 
-    # Aplica Bellman-Ford na matriz
     print("-----MATRIZ-----")
+    ini = time.time()
     resultado_matriz = matrix.bellman_ford(source)
     if isinstance(resultado_matriz, str):
         print(resultado_matriz)  # Se houver um ciclo de peso negativo
     else:
         distancias_matriz, predecessores_matriz = resultado_matriz
         print("Distâncias a partir do vértice de origem (matriz):", distancias_matriz)
-        print("Predecessores (matriz):", predecessores_matriz)
-
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
 
 def floyd_warshall(matrix: Matrix, list: List):
     print("-----LISTA------")
-    resultado = list.floyd_warshall()
-    print(resultado)
-    print("-----MATRIZ-----")
-    matrix.floyd_Warshall()
+    ini = time.time()
+    list.floyd_warshall()
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
 
+    print("-----MATRIZ-----")
+    ini = time.time()
+    matrix.floyd_Warshall()
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
 
 def a_star(matrix: Matrix, list: List):
     start_state = int(input("Vértice de partida: "))
     goal_state = int(input("Vértice de destino: "))
     print("-----LISTA------")
+    ini = time.time()
     path = list.a_star(start_state, goal_state)
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
+
+    print("Caminho encontrado:", path)
     print("-----MATRIZ-----")
+    ini = time.time()
     path = matrix.astar(start_state, goal_state)
     print("Caminho encontrado:", path)
+    fim = time.time()
+    tempo_execucao = fim - ini
+    print(f'Tempo de execução: {tempo_execucao} segundos')
 
-
-def autofill(matrix: Matrix, lista: List, directed: bool):
-    for i in range(len(lista.graph)):
-        for j in range(len(lista.graph)):
-            if random.random() < 0.3:  # Ajuste este valor para controlar a densidade do grafo
+def autofill(matrix: Matrix, list: List):
+    for i in range(len(list.graph)):
+        for j in range(len(list.graph)):
+            if random.random() < 0.3:
                 weight = random.randint(1, 10)
-                lista.add_edge(i, j, weight, directed)
+                list.add_edge(i, j, weight, directed)
                 matrix.add_edge(i, j, weight)
 
 
@@ -297,4 +316,4 @@ if __name__ == "__main__":
             case 16:
                 a_star(matrix, list)
             case 17:
-                autofill(matrix, list, directed)
+                autofill(matrix, list)

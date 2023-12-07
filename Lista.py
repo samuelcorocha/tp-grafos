@@ -178,108 +178,142 @@ class List:
         visited = set()
         path = []
 
-        def dfs_aux(vertice):
+        def dfs_aux(vertice, target):
             visited.add(vertice)
             path.append(vertice)
-            if vertice == v2:
+            if vertice == target:
                 return True
             for neighbor, _ in self.graph.get(vertice, []):
-                    if neighbor not in visited:
-                        if dfs_aux(neighbor):
-                            return True
+                if neighbor not in visited:
+                    if dfs_aux(neighbor, target):
+                        return True
+            path.pop()  # Remove the vertex from path if it doesn't lead to target
             return False
-        
-        dfs_aux(v1)
-        return path
 
-    def dijkstra(self, start):
-        import math
-        import heapq
+        if dfs_aux(v1, v2):
+            return path
+        else:
+            return [] 
 
-        # Inicialização
-        dist = [math.inf for _ in range(len(self.graph))]
-        visited = [0 for _ in range(len(self.graph))]
-        dist[start] = 0
+    def min_distance(self, dist, visited):
+        min_dist = float('inf')
+        min_index = -1
 
-        # Fila de prioridade
-        queue = [(0, start)]
+        for v in dist:
+            if dist[v] < min_dist and not visited[v]:
+                min_dist = dist[v]
+                min_index = v
 
-        while queue:
-            _, v = heapq.heappop(queue)
-            if visited[v] == 0:
-                visited[v] = 1
-                for neighbor, weight in self.graph[v]:
-                    if dist[neighbor] > dist[v] + weight:
-                        dist[neighbor] = dist[v] + weight
-                        heapq.heappush(queue, (dist[neighbor], neighbor))
-        return dist 
+        return min_index
 
-    def bellman_ford(self, source):
-        V = len(self.graph)
-        dist = [float('inf')] * V
-        pred = [None] * V
-
-        dist[source] = 0
-
-        for _ in range(V - 1):
-            for u in range(V):
-                for v, weight in self.graph[u]:
-                    if dist[u] != float('inf') and dist[u] + weight < dist[v]:
-                        dist[v] = dist[u] + weight
-                        pred[v] = u
-
-        # Verificar por ciclos de peso negativo
-        for u in range(V):
-            for v, weight in self.graph[u]:
-                if dist[u] != float('inf') and dist[u] + weight < dist[v]:
-                    # Encontrou um ciclo de peso negativo
-                    return "O grafo contém ciclo de peso negativo"
-
-        return dist, pred
+    def print_distances(self, dist):
+        print("Vértice \tDistância")
+        for i in dist:
+            print(f"{i}\t{dist[i]}")
     
-    def floyd_warshall(self):
-        n = len(self.graph)
-        dist = [[float('inf')]*n for _ in range(n)]
-        
-        for i in range(n):
-            dist[i][i] = 0
+    def dijkstra(self, source):
+        dist = {v: float('inf') for v in self.graph}
+        dist[source] = 0
+        visited = [False] * len(self.graph)
 
-        for u in range(n):
+        for _ in range(len(self.graph)):
+            u = self.min_distance(dist, visited)
+            visited[u] = True
+
+            for v, w in self.graph.get(u, []):
+                if not visited[v] and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+
+        self.print_distances(dist)
+
+    def min_distance(self, dist, visited):
+        min_dist = float('inf')
+        min_index = -1
+
+        for v in dist:
+            if dist[v] < min_dist and not visited[v]:
+                min_dist = dist[v]
+                min_index = v
+
+        return min_index
+        
+    def bellman_ford(self, origem):
+        dist = {i: float('inf') for i in self.graph}
+        dist[origem] = 0
+
+        for _ in range(len(self.graph) - 1):
+            for u in self.graph:
+                for v, w in self.graph[u]:
+                    if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                        dist[v] = dist[u] + w
+
+        self.print_distances(dist)
+        
+    def print_fwdistances(self, dist):
+        for i in range(len(dist)):
+            print(f"Vert {i}:")
+            for j in range(len(dist[i])):
+                if dist[i][j] != float('inf'):
+                    print(f"{j}\t{dist[i][j]}")
+                else:
+                    print(f"{j}\tINF")
+        
+    def floyd_warshall(self):
+        V = len(self.graph)
+        dist = [[float('inf')] * V for _ in range(V)]
+
+        for u in range(V):
+            dist[u][u] = 0
+
+        for u in self.graph:
             for v, w in self.graph[u]:
                 dist[u][v] = w
 
-        for k in range(n):
-            for i in range(n):
-                for j in range(n):
+        for k in self.graph:
+            for i in self.graph:
+                for j in self.graph:
                     dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
-        return dist
-    
-    def a_star(self, start, goal):
-        open_list = []
-        g = {v: float('inf') for v in self.graph}
-        f = {v: float('inf') for v in self.graph}
-        g[start] = 0
-        f[start] = h(start, goal)
-        heapq.heappush(open_list, (f[start], start))
-        parent = {start: None}
+        self.print_fwdistances(dist)
+            
+    def a_star(self, origem, destino):
+        if origem not in self.graph or destino not in self.graph:
+            return "Vertices não encontrados no grafo."
 
-        while open_list:
-            _, current = heapq.heappop(open_list)
+        open_set = set([origem])
+        closed_set = set()
+        dist = {vertice: float('inf') for vertice in self.graph}
+        dist[origem] = 0
 
-            if current == goal:
-                path = []
-                while current is not None:
-                    path.append(current)
-                    current = parent[current]
-                return path[::-1], g[goal]  # Retorna o caminho e a distância
+        while open_set:
+            atual = None
+            menor_custo = float('inf')
 
-            for neighbor, weight in self.graph[current]:
-                tentative_g = g[current] + weight
-                if tentative_g < g[neighbor]:
-                    parent[neighbor] = current
-                    g[neighbor] = tentative_g
-                    f[neighbor] = g[neighbor] + self.dijksta(neighbor, goal)
-                    heapq.heappush(open_list, (f[neighbor], neighbor))
+            for vertice in open_set:
+                if dist[vertice] < menor_custo:
+                    menor_custo = dist[vertice]
+                    atual = vertice
 
-        return None, float('inf')  # Retorna None e infinito se não houver caminho
+            if atual == destino:
+                break
+
+            open_set.remove(atual)
+            closed_set.add(atual)
+
+            for vizinho, peso in self.graph[atual]:
+                if vizinho in closed_set:
+                    continue
+
+                novo_custo = dist[atual] + peso
+                if novo_custo < dist[vizinho]:
+                    dist[vizinho] = novo_custo
+                    open_set.add(vizinho)
+
+        self.print_astar_distances(dist, origem, destino)
+        
+    def print_astar_distances(self, dist, origem, destino):
+        print(f"Origem\tDestino\tDistância")
+        if dist[destino] != float('inf'):
+            print(f"{origem}\t{destino}\t{dist[destino]}")
+        else:
+            print(f"{origem}\t{destino}\tINF")

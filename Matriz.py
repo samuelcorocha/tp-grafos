@@ -281,21 +281,19 @@ class Matrix:
         return distances, predecessors
 
     def floyd_Warshall(self):
-        dist = self.graph
         for i in range(self.n):
             for j in range(self.n):
-                if i != j:
-                    if self.graph[i][j] != "-":
-                        dist[i][j] = self.graph[i][j]
-                    else:
-                        dist[i][j] = float("inf")
-                dist[i][i] = 0
-        for i in range(self.n):
-            for j in range(self.n):
-                for k in range(self.n):
-                    if (dist[i][j] > dist[i][k] + dist[k][j]):
+                if self.graph[i][j] == "-" and i == j:
+                    self.graph[i][j] = 0
+        dist = [row[:] for row in self.graph]
+
+        for k in range(self.n):
+            for i in range(self.n):
+                for j in range(self.n):
+                    if dist[i][k] != "-" and dist[k][j] != "-" and (dist[i][j] == "-" or dist[i][k] + dist[k][j] < dist[i][j]):
                         dist[i][j] = dist[i][k] + dist[k][j]
-        print(dist)
+        for i in dist:
+            print(i)
 
     def astar(self, start, goal):
         heap = [(0, start)]
